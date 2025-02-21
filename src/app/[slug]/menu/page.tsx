@@ -2,6 +2,7 @@ import { getRestaurantBySlug } from "@/lib/data/get-restaurant-by-slug";
 
 import { notFound } from "next/navigation";
 import RestaurantHeader from "./components/header";
+import RestaurantCategories from "./components/categories";
 
 interface RestaurantMenuPageProps {
   params: Promise<{ slug: string }>;
@@ -34,6 +35,7 @@ const RestaurantMenuPage = async ({
             "https://www.arcosdorados.com/wp-content/uploads/2023/11/Novo-McDonalds-Montes-Claros.png",
         }}
       />
+      <RestaurantCategories restaurant={restaurant} />
     </div>
   );
 };
