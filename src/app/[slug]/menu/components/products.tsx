@@ -1,3 +1,4 @@
+import { formatCurrency } from "@/helpers/format-currency";
 import { Product } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,18 +23,15 @@ const Products = ({ products }: ProductsProps) => {
               {product.description}
             </p>
             <p className="pt-3 text-sm font-semibold">
-              {new Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              }).format(product.price)}
+              {formatCurrency(product.price)}
             </p>
           </div>
-          <div className="relative min-h-[82px] min-w-[120px]">
+          <div className="relative min-h-[82px] min-w-[80px]">
             <Image
               src={product.imageUrl}
               alt={product.name}
               fill
-              className="rounded-lg object-contain"
+              className="rounded-lg bg-gray-100 object-contain"
             />
           </div>
         </Link>

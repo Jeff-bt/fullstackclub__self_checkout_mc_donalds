@@ -15,7 +15,7 @@ const ProductHeader = ({ product }: ProductHeaderProps) => {
     router.back();
   };
   return (
-    <div className="relative h-[300px] w-full">
+    <div className="relative min-h-[300px] w-full">
       <Button
         variant="secondary"
         size="icon"
@@ -28,7 +28,7 @@ const ProductHeader = ({ product }: ProductHeaderProps) => {
         src={product.imageUrl}
         alt={product.name}
         fill
-        className="object-contain"
+        className="bg-gray-100 object-contain"
       />
       <Button
         variant="secondary"
