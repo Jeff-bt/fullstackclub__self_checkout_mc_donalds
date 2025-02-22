@@ -24,10 +24,10 @@ const RestaurantPage = async ({ params }: RestaurantPageProps) => {
           />
         </div>
 
-        <h2 className="font-bold">FSW Donald's</h2>
+        <h2 className="font-bold">{restaurant.name}</h2>
       </div>
       <div className="space-y-2 pt-24 text-center">
-        <h1 className="text-2xl font-semibold">Seja bem-vindo!</h1>
+        <h1 className="text-2xl font-semibold">{"Seja bem-vindo!"}</h1>
         <p className="opacity-55">
           Escolha como prefere aproveitar sua refeição. Estamos aqui para
           oferecer praticidade e sabor em cada detalhe!
