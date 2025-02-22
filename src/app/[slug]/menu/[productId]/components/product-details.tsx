@@ -34,8 +34,8 @@ const ProductDetails = ({ product, restaurant }: ProductDetailsProps) => {
   };
   return (
     <>
-      <div className="relative z-50 mt-[-1.5rem] flex flex-auto flex-col overflow-hidden rounded-t-3xl bg-white p-5">
-        <div className="flex-auto overflow-hidden">
+      <div className="relative z-50 mt-[-1.5rem] flex flex-auto flex-col rounded-t-3xl bg-white p-5">
+        <div className="flex-auto">
           <div className="flex items-center gap-1.5">
             <Image
               src={restaurant.avatarImageUrl}
@@ -70,27 +70,28 @@ const ProductDetails = ({ product, restaurant }: ProductDetailsProps) => {
               </Button>
             </div>
           </div>
-
-          <ScrollArea className="h-full">
-            <div className="mt-4 space-y-2">
-              <h4 className="font-semibold">Sobre</h4>
-              <p className="text-sm text-muted-foreground">
-                {product.description}
-              </p>
-            </div>
-
-            <div className="mt-6 space-y-2">
-              <div className="flex items-center gap-1">
-                <ChefHatIcon size={18} />
-                <h3 className="font-semibold">Ingredientes</h3>
+          <div className="mt-2 max-h-44 flex-1 overflow-auto">
+            <ScrollArea>
+              <div className="mt-4 space-y-2">
+                <h4 className="font-semibold">Sobre</h4>
+                <p className="text-sm text-muted-foreground">
+                  {product.description}
+                </p>
               </div>
-              <ul className="list-disc px-5 text-sm text-muted-foreground">
-                {product.ingredients.map((ingredient) => (
-                  <li key={ingredient}>{ingredient}</li>
-                ))}
-              </ul>
-            </div>
-          </ScrollArea>
+
+              <div className="mt-6 space-y-2">
+                <div className="flex items-center gap-1">
+                  <ChefHatIcon size={18} />
+                  <h3 className="font-semibold">Ingredientes</h3>
+                </div>
+                <ul className="list-disc px-5 text-sm text-muted-foreground">
+                  {product.ingredients.map((ingredient) => (
+                    <li key={ingredient}>{ingredient}</li>
+                  ))}
+                </ul>
+              </div>
+            </ScrollArea>
+          </div>
         </div>
         <Button className="mt-6 w-full rounded-full" onClick={handleAddToCart}>
           Adicionar à Sacola
