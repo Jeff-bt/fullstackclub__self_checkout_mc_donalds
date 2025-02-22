@@ -15,7 +15,7 @@ interface ProductDetailsProps {
   restaurant: Pick<Restaurant, "name" | "avatarImageUrl">;
 }
 const ProductDetails = ({ product, restaurant }: ProductDetailsProps) => {
-  const { toggleCart } = useContext(CartContext);
+  const { toggleCart, addProduct } = useContext(CartContext);
   const [quantity, setQuantity] = useState<number>(1);
   const handleDescreaseQuantity = () => {
     if (quantity === 1) return;
@@ -27,6 +27,10 @@ const ProductDetails = ({ product, restaurant }: ProductDetailsProps) => {
 
   const handleAddToCart = () => {
     toggleCart();
+    addProduct({
+      ...product,
+      quantity,
+    });
   };
   return (
     <>
