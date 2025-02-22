@@ -1,10 +1,12 @@
 "use client";
 
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { isValidCpf, removeCpfPunctuation } from "../../menu/helpers/cpf";
+import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { PatternFormat } from "react-number-format";
+import { z } from "zod";
 
+import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -14,33 +16,40 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/button";
-import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { PatternFormat } from "react-number-format";
-import { usePathname, useRouter } from "next/navigation";
+
+import { isValidCpf, removeCpfPunctuation } from "../../menu/helpers/cpf";
 
 const formSchema = z.object({
   cpf: z
     .string()
     .trim()
-    .min(1)
-    .refine((cpf) => isValidCpf(cpf), {
-      message: "CPF inválido",
+    .min(1, {
+      message: "O CPF é obrigatório.",
+    })
+    .refine((value) => isValidCpf(value), {
+      message: "CPF inválido.",
     }),
 });
 
-type FormSchemaType = z.infer<typeof formSchema>;
+type FormSchema = z.infer<typeof formSchema>;
 
 const CpfForm = () => {
-  const form = useForm<FormSchemaType>({
+  const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
   });
   const router = useRouter();
   const pathname = usePathname();
-  const onSubmit = async (data: FormSchemaType) => {
-    router.push(`${pathname}?cpf=${removeCpfPunctuation(data.cpf)}`);
-    console.log(pathname);
+  const onSubmit = (data: FormSchema) => {
+    router.replace(`${pathname}?cpf=${removeCpfPunctuation(data.cpf)}`);
   };
   const handleCancel = () => {
     router.back();
@@ -63,30 +72,33 @@ const CpfForm = () => {
               render={({ field }) => (
                 <FormItem className="px-4">
                   <FormLabel>Seu CPF</FormLabel>
-                  <PatternFormat
-                    placeholder="Digite seu CPF..."
-                    format="###.###.###-##"
-                    customInput={Input}
-                    {...field}
-                  ></PatternFormat>
+                  <FormControl>
+                    <PatternFormat
+                      placeholder="Digite seu CPF..."
+                      format="###.###.###-##"
+                      customInput={Input}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
                 </FormItem>
               )}
             />
-          </form>
-          <DrawerFooter>
-            <Button variant="destructive" className="w-full rounded-full">
-              Confirmar
-            </Button>
-            <DrawerClose>
-              <Button
-                variant="outline"
-                className="w-full rounded-full"
-                onClick={handleCancel}
-              >
-                Cancelar
+            <DrawerFooter>
+              <Button variant="destructive" className="w-full rounded-full">
+                Confirmar
               </Button>
-            </DrawerClose>
-          </DrawerFooter>
+              <DrawerClose asChild>
+                <Button
+                  variant="outline"
+                  className="w-full rounded-full"
+                  onClick={handleCancel}
+                >
+                  Cancelar
+                </Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </form>
         </Form>
       </DrawerContent>
     </Drawer>
