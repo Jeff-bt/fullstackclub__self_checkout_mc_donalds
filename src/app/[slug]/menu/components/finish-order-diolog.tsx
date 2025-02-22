@@ -24,6 +24,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { createOrder } from "../actions/create-order";
+import { useParams, useSearchParams } from "next/navigation";
+import { ConsumptionMethod } from "@prisma/client";
+import { useContext, useTransition } from "react";
+import { CartContext } from "../contexts/cart";
+import { toast } from "sonner";
+import { Loader2Icon } from "lucide-react";
 
 const formSchema = z.object({
   name: z.string().trim().min(1, {
@@ -44,6 +51,10 @@ interface FinishOrderDiologProps {
   onOpenChange: (open: boolean) => void;
 }
 const FinishOrderDiolog = ({ open, onOpenChange }: FinishOrderDiologProps) => {
+  const { slug } = useParams<{ slug: string }>();
+  const { products } = useContext(CartContext);
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,7 +63,26 @@ const FinishOrderDiolog = ({ open, onOpenChange }: FinishOrderDiologProps) => {
     },
     shouldUnregister: true,
   });
-  const onSubmit = (data: FormSchemaType) => {};
+  const onSubmit = async (data: FormSchemaType) => {
+    try {
+      const consumptionMethod = searchParams.get(
+        "consumptionMethod",
+      ) as ConsumptionMethod;
+      startTransition(async () => {
+        await createOrder({
+          consumptionMethod,
+          customerCpf: data.cpf,
+          customerName: data.name,
+          products,
+          slug,
+        });
+        onOpenChange(false);
+        toast.success("Pedido finalizado com sucesso!");
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -96,9 +126,19 @@ const FinishOrderDiolog = ({ open, onOpenChange }: FinishOrderDiologProps) => {
                 )}
               />
               <DrawerFooter>
-                <Button type="submit">Submit</Button>
+                <Button
+                  type="submit"
+                  variant="destructive"
+                  className="rounded-full"
+                  disabled={isPending}
+                >
+                  {isPending && <Loader2Icon className="animate-spinb" />}
+                  Finalizar
+                </Button>
                 <DrawerClose>
-                  <Button variant="outline">Cancel</Button>
+                  <Button variant="outline" className="w-full rounded-full">
+                    Cancelar
+                  </Button>
                 </DrawerClose>
               </DrawerFooter>
             </form>
